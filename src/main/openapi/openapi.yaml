@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+  title: Wine repository API
+  version: v1
+servers:
+- url: https://winerepository/v1
+  description: Development server
+paths:
+  "/wine/repository":
+    get:
+      summary: Get all wines in repository
+      responses:
+        '200':
+          description: All wines in the repository.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/wine"
+    put:
+      summary: Update an existing wine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/wine"
+      responses:
+        '201':
+          description: Updated wine record.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+    post:
+      summary: Add a new wine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/wine"
+      responses:
+        '201':
+          description: Wine record added.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+  "/wine/repository/{wineId}":
+    get:
+      summary: Get wine with id
+      parameters:
+      - name: wineId
+        in: path
+        description: The id of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: record of specific wine.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+    put:
+      summary: Update an existing wine
+      parameters:
+      - name: wineId
+        in: path
+        description: The id of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/wine"
+      responses:
+        '201':
+          description: Updated record of wine.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+    post:
+      summary: Add a new vintage
+      parameters:
+      - name: wineId
+        in: path
+        description: The id of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/wine"
+      responses:
+        '201':
+          description: New vintage record.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+        '409':
+          description: Conflict, vintage already exist.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+  "/wine/repository/{wineId}/{vintage}":
+    get:
+      summary: Get wine with id and vintage
+      parameters:
+      - name: wineId
+        in: path
+        description: The id of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: vintage
+        in: path
+        description: Vintage of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Wine and vintage record for wine.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+    put:
+      summary: Update an existing vintage of a wine
+      parameters:
+      - name: wineId
+        in: path
+        description: The id of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: vintage
+        in: path
+        description: Vintage of the wine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/wine"
+      responses:
+        '201':
+          description: Updated record.
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/wine"
+components:
+  schemas:
+    wine:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        labels:
+          type: array
+          items:
+            type: string
+        vintage:
+          type: string
+        url:
+          type: string
+        grapes:
+          type: array
+          items:
+            $ref: "#/components/schemas/contentGrape"
+        winery:
+          $ref: "#/components/schemas/winery"
+        region:
+          $ref: "#/components/schemas/region"
+        sellers:
+          type: array
+          items:
+            $ref: "#/components/schemas/sellerItem"
+    contentGrape:
+      properties:
+        id:
+          type: string
+    winery:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        homepage:
+          type: string
+    region:
+      properties:
+        id:
+          type: string
+        nameHierarchy:
+          type: array
+          items:
+            type:
+              string
+    sellerItem:
+      properties:
+        sellerItemId:
+          type: string
+

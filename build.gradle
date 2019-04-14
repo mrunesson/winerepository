@@ -1,0 +1,80 @@
+buildscript {
+    ext.kotlin_version = '1.3.30'
+    ext.ktor_version = '1.1.3'
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+  id "org.openapi.generator" version "4.0.0-beta3"
+}
+
+group 'org.linuxalert.wine'
+version '1.0.0'
+
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+mainClassName = "io.ktor.server.netty.DevelopmentEngine"
+
+sourceSets {
+    main {
+        kotlin {
+            srcDir { "$buildDir/generated/src/main/kotlin" }
+        }
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlin.Experimental,io.ktor.util.KtorExperimentalAPI']
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+repositories {
+    mavenCentral()
+    maven { url  "http://dl.bintray.com/kotlin/ktor" }
+    maven { url "https://dl.bintray.com/kotlin/kotlinx" }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "io.ktor:ktor-metrics:$ktor_version"
+    compile "io.ktor:ktor-locations:$ktor_version"
+    compile "io.ktor:ktor-gson:$ktor_version"
+    compile "io.ktor:ktor-client-core:$ktor_version"
+    compile "io.ktor:ktor-client-apache:$ktor_version"
+    compile "ch.qos.logback:logback-classic:1.2.1"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin.dependsOn tasks.openApiGenerate
+
+openApiGenerate {
+    generatorName = "kotlin-server"
+    inputSpec = "$rootDir/src/main/openapi/openapi.yaml"
+    outputDir = "$buildDir/generated".toString()
+
+    configOptions = [
+            dateLibrary: "java8",
+            packageName: "org.linuxalert.wine.repository.generated",
+            featureConditionalHeaders: true,
+            featureHSTS: false
+    ]
+    templateDir = "/Users/magru/work/openapi-generator/modules/openapi-generator/src/main/resources/kotlin-server"
+}
