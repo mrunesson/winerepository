@@ -42,7 +42,7 @@ fun Route.DefaultApi() {
             "id" : "id"
           } ]
         }"""
-        
+
         when(exampleContentType) {
             "application/json" -> call.respond(gson.fromJson(exampleContentString, empty::class.java))
             "application/xml" -> call.respondText(exampleContentString, ContentType.Text.Xml)

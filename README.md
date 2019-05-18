@@ -6,7 +6,7 @@ Microservice to store data about wines.
 
 ## Requires
 
-* Kotlin 1.3.30
+* Kotlin 1.3.31
 
 ## Build
 
@@ -18,7 +18,7 @@ This runs all tests and packages the library.
 
 ## Running
 
-The server builds as a fat jar with a main entrypoint. To start the service, run `java -jar ./build/libs/kotlin-server.jar`.
+The server builds as a fat jar with a main entrypoint. To start the service, run `java -jar build/libs/wine-repository-1.0.0-all.jar`.
 
 You may also run in docker:
 
